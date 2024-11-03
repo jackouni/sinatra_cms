@@ -1,0 +1,3 @@
+<% @files.each do |file| %>
+  <a href=<%= "#{File.basename(file, ".*")}"%>><li><%= file %></li></a>
+<% end %>
