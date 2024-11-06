@@ -14,13 +14,17 @@ end
 before do 
   @root  = File.expand_path("..", __FILE__)
   @files = Dir.children('data')
-  @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 end
 
 helpers do
   def remove_ext(file_name)
     File.basename(file_name, ".*")
   end 
+
+  def markdown_to_html(md_file)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+    markdown.render(md_file)
+  end
 end
 
 get '/' do
