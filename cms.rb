@@ -21,9 +21,20 @@ helpers do
     File.basename(file_name, ".*")
   end 
 
-  def markdown_to_html(md_file)
+  def render_markdown(content)
     markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-    markdown.render(md_file)
+    markdown.render(content)
+  end
+
+  def load_file_contents(path)
+    content = File.read(path)
+
+    case File.extname(path)
+    when ".txt" then headers["Content-Type"] = "text/plain"
+    when ".md"  then content = render_markdown(content)
+    end
+
+    content
   end
 end
 
@@ -35,8 +46,7 @@ get '/:file_name' do
   @file_name = params[:file_name]
 
   if @files.include? @file_name
-    headers["Content-Type"] = "text/plain"
-    File.read("data/#{@file_name}")
+    load_file_contents("data/#{@file_name}")
   else
     session[:error] = "#{@file_name} does not exist."
     redirect '/'
