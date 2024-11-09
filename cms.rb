@@ -11,9 +11,20 @@ configure do
   set :session_secret, SecureRandom.hex(64)
 end
 
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
+end
+
+def file_path(file_name)
+  File.join(data_path, file_name)
+end
+
 before do 
   @root  = File.expand_path("..", __FILE__)
-  @files = Dir.children('data')
 end
 
 helpers do
@@ -39,14 +50,43 @@ helpers do
 end
 
 get '/' do
+  @files = Dir.children(data_path)
   erb :index, layout: :layout
 end
 
 get '/:file_name' do
   @file_name = params[:file_name]
+  file_path = file_path(@file_name)
 
-  if @files.include? @file_name
-    load_file_contents("data/#{@file_name}")
+  if File.exist?(file_path)
+    load_file_contents(file_path)
+  else
+    session[:error] = "#{@file_name} does not exist."
+    redirect '/'
+  end
+end
+
+post '/:file_name' do
+  @file_name = params[:file_name]
+  file_path = File.join(data_path, @file_name)
+
+  if File.exist?(file_path)
+    session[:success] = "#{@file_name} successfully modified."
+    File.write(file_path, params[:file_edit])
+  else
+    session[:error] = "#{@file_name} was not successfully modified."
+  end
+
+  redirect '/'
+end
+
+get '/:file_name/edit' do
+  @file_name = params[:file_name]
+  file_path = File.join(data_path, @file_name)
+
+  if File.exist?(file_path)
+    @file_contents = File.read(file_path)
+    erb :edit, layout: :layout
   else
     session[:error] = "#{@file_name} does not exist."
     redirect '/'
