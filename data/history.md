@@ -1,4 +1,5 @@
-# HISTORY:
+# THIS HISTORY:
+
 1993 - Yukihiro Matsumoto dreams up Ruby.
 
 1995 - Ruby 0.95 released.
@@ -36,3 +37,8 @@
 2021 - Ruby 3.1 released.
 
 2022 - Ruby 3.2 released.
+
+*More releases to come...*
+
+  
+  

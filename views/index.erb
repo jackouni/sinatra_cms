@@ -1,5 +1,8 @@
 <ul>
   <% @files.each do |file_name| %>
-    <a href=<%= "/" + file_name %>><li><%= File.basename(file_name, ".*") %></li></a>
+    <div class="file-list">
+      <a href=<%= "/" + file_name %>><li> <%= File.basename(file_name, ".*") %> </li></a>
+      <a href=<%= "/" + file_name + "/edit"%>><h4>Edit</h4></a>
+    </div>
   <% end %>
 </ul>

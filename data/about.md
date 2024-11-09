@@ -1,6 +1,10 @@
-# Ruby is about...
+# Ruby is about!
+
 This an about page.
 
-This is a Sinatra app.
-
 Ruby is a great language!
+
+MORE MORE MORE MORE SINATRAAA
+  
+
+  

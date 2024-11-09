@@ -1,0 +1,21 @@
+.flash-error {
+	width: 25%;
+	height: 10%;
+	background-color: rgb(255, 180, 180);
+}
+
+.flash-success {
+	width: 25%;
+	height: 10%;
+	background-color: rgb(146, 255, 146);
+}
+
+.file-list {
+	width: 50%;
+	height: 10%;
+}
+
+textarea {
+	width: 50%;
+	height: 500px;
+}
