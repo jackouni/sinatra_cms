@@ -1,4 +1,4 @@
-# Ruby is about!
+# This is the about page!
 
 This an about page.
 

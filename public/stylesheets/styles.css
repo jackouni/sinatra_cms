@@ -1,17 +1,19 @@
-.flash-error {
-	width: 25%;
-	height: 10%;
-	background-color: rgb(255, 180, 180);
+body {
+	padding: 1em;
+	font-family: sans-serif;
 }
 
-.flash-success {
-	width: 25%;
-	height: 10%;
-	background-color: rgb(146, 255, 146);
+.flash-msg {
+	width: 90%;
+	height: 50px;
+	padding: 10px;
+	background: #ffff99;
 }
 
 .file-list {
-	width: 50%;
+	display: flex;
+	gap: 1rem;
+	width: 400px;
 	height: 10%;
 }
 

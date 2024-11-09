@@ -1,8 +1,8 @@
 <h1>Edit contents of <%= @file_name %>:</h1>
-<form action="/<%= @file_name %>" method="post">
+<form action="/edit/<%= @file_name %>" method="post">
   <label for="file_edit">Edit Contents:</label>
   <textarea id="file-edit-box" name="file_edit" value="<%=@file_contents%>"><%=@file_contents%></textarea>
 
   <button type="submit">Submit</button>
-  <a href="/">Cancel</button>  
+  <a href="/">Cancel</a> 
 </form>

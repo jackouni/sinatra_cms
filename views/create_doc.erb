@@ -1,0 +1,12 @@
+<% if session[:message] %>
+  <p class="flash-msg"> <%= session.delete(:message) %> </p>
+<% end %>
+
+<h2>Create a new document:</h2>
+<form action="/create" method="post">
+  <label for="doc_name">Document Name:</label>
+  <input name="doc_name">
+  <button type="submit">Create document</button>
+</form>
+  
+<a href="/">Cancel</a>
