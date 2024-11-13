@@ -1,10 +1,24 @@
 <ul>
   <% @files.each do |file_name| %>
+    <% next if file_name == "users.yaml" %>
     <li class="file-list">
       <a class="file-list-name" href=<%= "/view/" + file_name %>><%= File.basename(file_name, ".*") %></a>
       <a class="edit-btn" href=<%= "/edit/" + file_name %>>Edit</a>
+      <a class="delete-btn" href=<%= "/delete/" + file_name %>>Delete</a>
     </li>
   <% end %>
 </ul>
 
 <a href="/new">Create Document</a>
+
+<br>
+<% if session[:user] %>
+  <h6>Signed in as: <em><%= session[:user] %></em></h6>
+  <form action="/sign-out" method="get">
+    <button type="submit">Sign Out</button>
+  </form>
+<% else %>
+  <form action="/login" method="get">
+    <button type="submit">Sign In</button>
+  </form>
+<% end %>

@@ -4,6 +4,8 @@ require "tilt/erubis"
 require "rack"
 require "json"
 require "redcarpet"
+require "yaml"
+require 'bcrypt'
 
 
 configure do
@@ -23,7 +25,24 @@ def file_path(file_name)
   File.join(data_path, file_name)
 end
 
-before do 
+def hashed_password(hash)
+  BCrypt::Password.new(hash)
+end
+
+def load_yaml(file_name)
+  if File.extname(file_name) == ".yaml"
+    YAML.load_file(data_path + "/" + file_name)
+  end
+end
+
+def valid_credentials(username, password)
+  load_yaml("users.yaml").any? do |user, hash| 
+    user == username && 
+    BCrypt::Password.new(hash) == password 
+  end
+end
+
+before do
   @root  = File.expand_path("..", __FILE__)
 end
 
@@ -54,8 +73,23 @@ helpers do
     end
   end
 
+  def delete_document(name)
+    File.delete(File.join(data_path, name))
+  end
+
   def valid_file_name?(name)
     name.size > 0
+  end
+
+  def user_signed_in?
+    session.key?(:user)
+  end
+
+  def required_signed_in_user
+    unless user_signed_in?
+      session[:message] = "You must be signed in to do that."
+      redirect "/" 
+    end
   end
 end
 
@@ -80,6 +114,8 @@ end
 
 # EDITING PAGE FOR A FILE
 get '/edit/:file_name' do
+  required_signed_in_user
+
   @file_name = params[:file_name]
   file_path = File.join(data_path, @file_name)
 
@@ -94,6 +130,8 @@ end
 
 # SUBMIT EDITS FOR A FILE
 post '/edit/:file_name' do
+  required_signed_in_user
+
   @file_name = params[:file_name]
   file_path = File.join(data_path, @file_name)
 
@@ -109,11 +147,15 @@ end
 
 # CREATE FILE PAGE
 get "/new" do
+  required_signed_in_user
+
   erb :create_doc, layout: :layout
 end 
 
 # SUBMIT FILE CREATION
 post "/create" do
+  required_signed_in_user
+
   file_name = params[:doc_name].strip
 
   if valid_file_name?(file_name)
@@ -121,9 +163,53 @@ post "/create" do
     session[:message] = "#{file_name} was successfully created."
     redirect "/"
   else
-    status 422
     session[:message] = "A name is required"
-    erb :create_doc
+    status 422
   end
 
+  erb :create_doc
+end
+
+# DELETE A FILE
+get "/delete/:file_name" do
+  required_signed_in_user
+
+  file_name = params[:file_name] 
+  file_path = File.join(data_path, file_name)
+
+  if File.exist?(file_path)
+    delete_document(file_name)
+    session[:message] = "#{file_name} has been deleted"
+  else
+    session[:message] = "No file with that name was found."
+  end
+
+  redirect "/"
+end
+
+# USER LOGIN
+get "/login" do
+  erb :signin
+end
+
+# VALIDATE USER LOGIN CREDENTIALS
+post "/user-validation" do 
+  username = params[:username]
+  password = params[:password]
+  users = load_yaml "users.yaml"
+
+  if valid_credentials(username, password)
+    session[:user] = username
+    session[:message] = "Welcome!"
+    redirect "/"
+  else
+    session[:message] =  "Invalid credentials"
+    redirect "/login"
+  end
+end
+
+# SIGN OUT USER
+get "/sign-out" do
+  session.delete(:user)
+  redirect "/login"
 end

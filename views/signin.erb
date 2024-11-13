@@ -1,0 +1,15 @@
+<h1>Please Sign-In:</h1>
+
+<% if session[:message] %>
+  <p class="flash-msg"> <%= session.delete(:message) %> </p>
+<% end %>
+
+<form action="/user-validation" method="post">
+  <label for="username">User name:</label>
+  <input name="username">
+
+  <label for="password">Passowrd:</label>
+  <input name="password">
+
+  <button type="submit">Submit</button>
+</form>

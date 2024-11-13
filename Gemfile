@@ -5,6 +5,7 @@ gem "sinatra-contrib"
 gem "erubis"  
 gem "webrick"
 gem "redcarpet"
+gem "bcrypt"
 
 ruby "3.2.2"
 
